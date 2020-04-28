@@ -111,6 +111,30 @@ func (j *Json) Del(key string) {
 	delete(m, key)
 }
 
+func (j *Json) RangeRaw(fn func(string, interface{}) bool) {
+	if nil != fn {
+		if m, err := j.Map(); nil == err {
+			for key, val := range m {
+				if !fn(key, val) {
+					break
+				}
+			}
+		}
+	}
+}
+
+func (j *Json) Range(fn func(string, *Json) bool) {
+	if nil != fn {
+		if m, err := j.Map(); nil == err {
+			for key, val := range m {
+				if !fn(key, &Json{val}) {
+					break
+				}
+			}
+		}
+	}
+}
+
 // Get returns a pointer to a new `Json` object
 // for `key` in its `map` representation
 //
